@@ -54,7 +54,7 @@ namespace MonoGameTest
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			_spriteBatch.Begin();
-			_spriteBatch.Draw(_redTexture, new Vector2(100, 100), Color.White);
+			_spriteBatch.Draw(_redTexture, new Vector2(150, 150), Color.Red);
 			_spriteBatch.End();
 
 			base.Draw(gameTime);
