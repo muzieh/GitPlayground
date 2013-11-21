@@ -17,11 +17,15 @@ namespace MonoGameTest
 		{
 			_graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
+			_graphics.PreferMultiSampling = true;
+			_graphics.PreferredBackBufferHeight = 800;
+			_graphics.PreferredBackBufferWidth = 800;
 		}
 
 		protected override void Initialize()
 		{
 			base.Initialize();
+
 		}
 
 		protected override void LoadContent()
