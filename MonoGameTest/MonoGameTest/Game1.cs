@@ -6,8 +6,10 @@ namespace MonoGameTest
 {
 	public class Game1 : Game
 	{
-		private Texture2D _texture;
-		private Texture2D _texture1;
+		private Texture2D _redTexture;
+		private Texture2D _blueTexture;
+
+		private Texture2D _explosionTexture;
 		private GraphicsDeviceManager _graphics;
 		private SpriteBatch _spriteBatch;
 
@@ -25,7 +27,9 @@ namespace MonoGameTest
 		protected override void LoadContent()
 		{
 			_spriteBatch = new SpriteBatch(GraphicsDevice);
-			_texture = Content.Load<Texture2D>("red");
+			_redTexture = Content.Load<Texture2D>("red");
+			_blueTexture = Content.Load<Texture2D>("blue");
+			_explosionTexture = Content.Load<Texture2D>("explosion");
 		}
 
 		protected override void UnloadContent()
@@ -46,7 +50,7 @@ namespace MonoGameTest
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			_spriteBatch.Begin();
-			_spriteBatch.Draw(_texture, new Vector2(100, 100), Color.White);
+			_spriteBatch.Draw(_redTexture, new Vector2(100, 100), Color.White);
 			_spriteBatch.End();
 
 			base.Draw(gameTime);
