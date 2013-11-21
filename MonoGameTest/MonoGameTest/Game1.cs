@@ -6,8 +6,8 @@ namespace MonoGameTest
 {
 	public class Game1 : Game
 	{
-		private Texture2D _texture;
 		private GraphicsDeviceManager _graphics;
+		private Texture2D _texture;
 		private SpriteBatch _spriteBatch;
 
 		public Game1()
