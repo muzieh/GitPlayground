@@ -97,7 +97,7 @@ namespace MonoGameTest
 
 		private int _alpha;
 		private float _alphaF;
-		private float _alphaSpeed = (float) 0.09;
+		private float _alphaSpeed = (float) 0.19;
 		private readonly Random _rnd;
 		public override void Update(GameTime gameTime)
 		{
@@ -134,20 +134,32 @@ namespace MonoGameTest
 
 	public class Line
 	{
-		private Vector2 _begin;
-		private Vector2 _end;
+		private Vector2[] _parts;
 
 		public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D texture, Color color )
 		{
-			var vector = _end - _begin;
-			var angle = Math.Atan2(vector.Y, vector.X);
-			spriteBatch.Draw(texture, _begin, null, color,(float)angle, Vector2.Zero, new Vector2(vector.Length(),1), SpriteEffects.None, 0 );
+			var length = _parts.Length;
+			var i = 0;
+			do
+			{
+				var begin = _parts[i];
+				var end = _parts[i + 1];
+				var vector = end - begin;
+				var angle = Math.Atan2(vector.Y, vector.X);
+				spriteBatch.Draw(texture, begin, null, color,(float)angle, Vector2.Zero, new Vector2(vector.Length(),2), SpriteEffects.None, 0 );
+				i++;
+			} while (i < length-1);
 		}
 
 
 		public static Line CreateLine(Vector2 begin, Vector2 end)
 		{
-			var line = new Line {_begin = begin, _end = end};
+			
+			var line = new Line {_parts = new Vector2[4]};
+			line._parts[0] = new Vector2(0,0);
+			line._parts[1] = new Vector2(100,100);
+			line._parts[2] = new Vector2(190,10);
+			line._parts[3] = new Vector2(200,200);
 			return line;
 		}
 	}
