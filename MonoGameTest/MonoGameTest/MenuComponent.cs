@@ -26,7 +26,6 @@ namespace MonoGameTest
 		public override void Draw(GameTime gameTime)
 		{
 			_batch.Begin();
-			_batch.DrawString();
 			_batch.End();
 
 			base.Draw(gameTime);

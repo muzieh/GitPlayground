@@ -23,8 +23,8 @@ namespace MonoGameTest
 			_graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 			_graphics.PreferMultiSampling = true;
-			_graphics.PreferredBackBufferHeight = 800;
-			_graphics.PreferredBackBufferWidth = 800;
+			_graphics.PreferredBackBufferHeight = 200;
+			_graphics.PreferredBackBufferWidth = 200;
 			this.IsFixedTimeStep = false;
 			_rnd = new Random(100);
 
@@ -72,7 +72,7 @@ namespace MonoGameTest
 
 			_spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null,null,null);
 			for(int i=0; i<300; i++)
-					_spriteBatch.Draw(_redTexture, new Vector2(_rnd.Next(100,200), _rnd.Next(100,200)), new Color(255,255,255,15));
+					_spriteBatch.Draw(_redTexture, new Vector2(_rnd.Next(30,100), _rnd.Next(30,100)), new Color(255,255,255,15));
 			_spriteBatch.End();
 
 			base.Draw(gameTime);
@@ -97,7 +97,7 @@ namespace MonoGameTest
 
 		private int _alpha;
 		private float _alphaF;
-		private float _alphaSpeed = (float) 0.19;
+		private float _alphaSpeed = (float) 0.09;
 		private readonly Random _rnd;
 		public override void Update(GameTime gameTime)
 		{
@@ -157,9 +157,9 @@ namespace MonoGameTest
 			
 			var line = new Line {_parts = new Vector2[4]};
 			line._parts[0] = new Vector2(0,0);
-			line._parts[1] = new Vector2(100,100);
-			line._parts[2] = new Vector2(190,10);
-			line._parts[3] = new Vector2(200,200);
+			line._parts[1] = new Vector2(10,10);
+			line._parts[2] = new Vector2(19,10);
+			line._parts[3] = new Vector2(20,20);
 			return line;
 		}
 	}
