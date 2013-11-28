@@ -12,19 +12,21 @@ namespace MonoGameTest
 		private Texture2D _explosionTexture;
 		private GraphicsDeviceManager _graphics;
 		private SpriteBatch _spriteBatch;
+		private SpriteFont _consolaFont;
 
 		public Game1()
 		{
 			_graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 			_graphics.PreferMultiSampling = true;
-			_graphics.PreferredBackBufferHeight = 800;
-			_graphics.PreferredBackBufferWidth = 800;
+			_graphics.PreferredBackBufferHeight = 200;
+			_graphics.PreferredBackBufferWidth = 200;
 		}
 
 		protected override void Initialize()
 		{
 			base.Initialize();
+			Components.Add(new FrameCounter(this,_consolaFont, new Vector2(10,10)));
 
 		}
 
@@ -34,6 +36,7 @@ namespace MonoGameTest
 			_redTexture = Content.Load<Texture2D>("red");
 			_blueTexture = Content.Load<Texture2D>("blue");
 			_explosionTexture = Content.Load<Texture2D>("explosion");
+			_consolaFont = Content.Load<SpriteFont>("ConsolaFont");
 		}
 
 		protected override void UnloadContent()
