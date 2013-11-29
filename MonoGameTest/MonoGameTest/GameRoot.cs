@@ -13,18 +13,19 @@ namespace MonoGameTest
 		private Texture2D _pixel;
 
 		private Texture2D _explosionTexture;
-		private GraphicsDeviceManager _graphics;
 		private SpriteBatch _spriteBatch;
 		private SpriteFont _consoleFont;
 		private readonly Random _rnd;
+		private Effect _effect;
+
 
 		public GameRoot()
 		{
-			_graphics = new GraphicsDeviceManager(this);
+			var graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
-			_graphics.PreferMultiSampling = true;
-			_graphics.PreferredBackBufferHeight = 200;
-			_graphics.PreferredBackBufferWidth = 200;
+			graphics.PreferMultiSampling = true;
+			graphics.PreferredBackBufferHeight = 200;
+			graphics.PreferredBackBufferWidth = 200;
 			this.IsFixedTimeStep = false;
 			_rnd = new Random(100);
 
@@ -51,6 +52,7 @@ namespace MonoGameTest
 			_explosionTexture = Content.Load<Texture2D>("explosion");
 			_consoleFont = Content.Load<SpriteFont>("consoleFont");
 			_pixel = Content.Load<Texture2D>("pixel");
+			_effect = Content.Load<Effect>("Effect1");
 		}
 
 		protected override void UnloadContent()

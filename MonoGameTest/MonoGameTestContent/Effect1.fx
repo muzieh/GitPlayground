@@ -1,6 +1,7 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
+float AmbientIntensity = 0.1;
 
 // TODO: add effect parameters here.
 
@@ -38,7 +39,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
     // TODO: add your pixel shader code here.
 
-    return float4(1, 0, 0, 1);
+    return float4(1, 0, 0, 1) * AmbientIntensity;
 }
 
 technique Technique1
