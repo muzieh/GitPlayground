@@ -13,9 +13,7 @@ float4 PixelShaderFunction(float4 coor : TEXCOORD0) : COLOR0
 
 	if( oryg.r < 0.5 && oryg.g < 0.5 && oryg.b < 0.5 )
 	{
-		Color.r = 0;
-		Color.g = 0;
-		Color.b = 0;
+		Color.rgb = 0;
 	}
 	return Color;
 }
