@@ -52,9 +52,9 @@ namespace WindowsGame3
 			_effect = Content.Load<Effect>("Effect2");
 			_sprite = Content.Load<Texture2D>("images");
 			_lightPosition = new Vector2(0.5f, 0.5f);
-			_intensity = 0.04f;
+			_intensity = 0.94f;
 			_point = Content.Load<Texture2D>("point");
-			_factor = 0.1f;
+			_factor = 2.1f;
 
 		}
 
