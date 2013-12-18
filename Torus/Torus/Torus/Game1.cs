@@ -17,6 +17,8 @@ namespace Torus
 		SpriteBatch spriteBatch;
 		CameraManager _camera;
 		public VertexBuffer _vertexBuffer;
+		private float _yRotation;
+		private float _xRotation;
 
 		public Game1()
 		{
@@ -34,13 +36,20 @@ namespace Torus
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 			
-			var vertices = new VertexPositionColor[3];
+			var tp = new TorusGenerator();
+			Vector3[] points = tp.Generate();
 			var i = 0;
-			vertices[i++] = new VertexPositionColor(new Vector3(0,1,0), Color.Red);
-			vertices[i++] = new VertexPositionColor(new Vector3(1f,-1f,0), Color.Green);
-			vertices[i++] = new VertexPositionColor(new Vector3(-1f,-1f,0), Color.Blue);
+			var vertices = new VertexPositionColor[points.Length * 3];
+			for (int ii = 0; ii < points.Length; ii++)
+			{
+				Vector3 point = points[ii];
+				vertices[i++] = new VertexPositionColor(point, Color.Red);
+				vertices[i++] = new VertexPositionColor(point + new Vector3(0.02f, 0, 0), Color.Green);
+				vertices[i++] = new VertexPositionColor(point + new Vector3(0.02f,-0.02f,0), Color.Blue);
 
-			_vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
+			}
+
+			_vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), vertices.Length , BufferUsage.WriteOnly);
 			_vertexBuffer.SetData<VertexPositionColor>(vertices);
 		}
 
@@ -54,7 +63,10 @@ namespace Torus
 				this.Exit();
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape))
 				this.Exit();
-		
+
+			_yRotation += 0.01f;
+			_xRotation += 0.01f;
+
 			base.Update(gameTime);
 		}
 
@@ -63,7 +75,7 @@ namespace Torus
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 			var effect = new BasicEffect(GraphicsDevice);
 			//effect.EnableDefaultLighting();
-			effect.World = Matrix.Identity;
+			effect.World = Matrix.CreateRotationX(_xRotation) * Matrix.CreateRotationY(_yRotation);
 			effect.Projection = _camera.Projection;
 			effect.View = _camera.View;
 			//effect.DiffuseColor = new Vector3(0.2f, 0.5f, 1f);
@@ -74,7 +86,7 @@ namespace Torus
 			foreach (var pass in effect.CurrentTechnique.Passes)
 			{
 				pass.Apply();
-				GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
+				GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _vertexBuffer.VertexCount / 3);
 			}
 
 			base.Draw(gameTime);

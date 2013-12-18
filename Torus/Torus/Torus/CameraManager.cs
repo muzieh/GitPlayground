@@ -19,7 +19,7 @@ namespace Torus
 		public CameraManager(GraphicsDevice graphicsDevice)
 		{
 			_graphicsDevice = graphicsDevice;
-			_cameraPosition = new Vector3(0, 0, 3f);
+			_cameraPosition = new Vector3(0, 0, 10f);
 			_cameraTarget = new Vector3(0, 0, 0);
 			_cameraUpVector = Vector3.UnitY;
 
