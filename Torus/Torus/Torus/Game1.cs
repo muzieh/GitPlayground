@@ -11,13 +11,12 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Torus
 {
-	/// <summary>
-	/// This is the main type for your game
-	/// </summary>
 	public class Game1 : Microsoft.Xna.Framework.Game
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
+		CameraManager _camera;
+		public VertexBuffer _vertexBuffer;
 
 		public Game1()
 		{
@@ -25,67 +24,61 @@ namespace Torus
 			Content.RootDirectory = "Content";
 		}
 
-		/// <summary>
-		/// Allows the game to perform any initialization it needs to before starting to run.
-		/// This is where it can query for any required services and load any non-graphic
-		/// related content.  Calling base.Initialize will enumerate through any components
-		/// and initialize them as well.
-		/// </summary>
 		protected override void Initialize()
 		{
-			// TODO: Add your initialization logic here
-
 			base.Initialize();
+			_camera = new CameraManager(GraphicsDevice);
 		}
 
-		/// <summary>
-		/// LoadContent will be called once per game and is the place to load
-		/// all of your content.
-		/// </summary>
 		protected override void LoadContent()
 		{
-			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
+			
+			var vertices = new VertexPositionColor[3];
+			var i = 0;
+			vertices[i++] = new VertexPositionColor(new Vector3(0,1,0), Color.Red);
+			vertices[i++] = new VertexPositionColor(new Vector3(1f,-1f,0), Color.Green);
+			vertices[i++] = new VertexPositionColor(new Vector3(-1f,-1f,0), Color.Blue);
 
-			// TODO: use this.Content to load your game content here
+			_vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
+			_vertexBuffer.SetData<VertexPositionColor>(vertices);
 		}
 
-		/// <summary>
-		/// UnloadContent will be called once per game and is the place to unload
-		/// all content.
-		/// </summary>
 		protected override void UnloadContent()
 		{
-			// TODO: Unload any non ContentManager content here
 		}
 
-		/// <summary>
-		/// Allows the game to run logic such as updating the world,
-		/// checking for collisions, gathering input, and playing audio.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update(GameTime gameTime)
 		{
-			// Allows the game to exit
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
 				this.Exit();
-
-			// TODO: Add your update logic here
-
+			if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+				this.Exit();
+		
 			base.Update(gameTime);
 		}
 
-		/// <summary>
-		/// This is called when the game should draw itself.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw(GameTime gameTime)
 		{
 			GraphicsDevice.Clear(Color.CornflowerBlue);
+			var effect = new BasicEffect(GraphicsDevice);
+			//effect.EnableDefaultLighting();
+			effect.World = Matrix.Identity;
+			effect.Projection = _camera.Projection;
+			effect.View = _camera.View;
+			//effect.DiffuseColor = new Vector3(0.2f, 0.5f, 1f);
+			effect.VertexColorEnabled = true;
 
-			// TODO: Add your drawing code here
+			GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+			
+			foreach (var pass in effect.CurrentTechnique.Passes)
+			{
+				pass.Apply();
+				GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
+			}
 
 			base.Draw(gameTime);
 		}
+
 	}
 }
