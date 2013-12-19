@@ -3,32 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Torus
 {
 	public class TorusGenerator
 	{
-		public Vector3[] Generate()
+
+        public VertexPositionNormalTexture[] Generate(int thetaParts, int phiParts)
 		{
 			double r0 = 2;
-			double r1 = 0.4;
+			double r1 = 1;
 			double theta = 0;
 			double phi = 0;
-			double thetaDelta = 2.0 * MathHelper.Pi / 200.0;
-			double phiDelta = 2.0 * MathHelper.Pi / 200.0;
+            double thetaDelta = 2.0 * MathHelper.Pi / thetaParts;
+            double phiDelta = 2.0 * MathHelper.Pi / phiParts;
 
-			var list = new List<Vector3>();
+			var list = new List<VertexPositionNormalTexture>();
 
 			do
 			{
+					
+					var rotMatrix = Matrix.CreateRotationZ((float)theta);
+					var center = Vector3.Transform(new Vector3((float)r0, 0, 0), rotMatrix);
 				phi = 0.0;
 				do
 				{
 					var point = GetPoint(r0, r1, theta, phi);
-					list.Add(point);
+				    var normal = Vector3.Normalize(point-center);
+					list.Add(new VertexPositionNormalTexture(point, normal, Vector2.Zero));
 					phi += phiDelta;
 				} while (phi < MathHelper.Pi * 2.0);
 				theta += thetaDelta;
+			    
 			} while (theta < MathHelper.Pi * 2.0);
 
 			return list.ToArray();

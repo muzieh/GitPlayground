@@ -19,41 +19,60 @@ namespace Torus
 		public VertexBuffer _vertexBuffer;
 		private float _yRotation;
 		private float _xRotation;
+	    private BasicEffect _effect;
+	    private Texture2D _texture2;
 
-		public Game1()
+	    public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
+	        graphics.PreferMultiSampling = true;
 		}
 
 		protected override void Initialize()
 		{
 			base.Initialize();
 			_camera = new CameraManager(GraphicsDevice);
-		}
+			_effect = new BasicEffect(GraphicsDevice);
+
+        }
 
 		protected override void LoadContent()
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
-			
+		    _texture2 = Content.Load<Texture2D>("texture");
 			var tp = new TorusGenerator();
-			Vector3[] points = tp.Generate();
+		    int thetaParts = 40;
+		    int phiParts = 30;
+            VertexPositionNormalTexture[] points = tp.Generate(thetaParts, phiParts);
 			var i = 0;
-			var vertices = new VertexPositionColor[points.Length * 3];
+			var vertices = new List<VertexPositionNormalTexture>();
 			for (int ii = 0; ii < points.Length; ii++)
 			{
-				Vector3 point = points[ii];
-				vertices[i++] = new VertexPositionColor(point, Color.Red);
-				vertices[i++] = new VertexPositionColor(point + new Vector3(0.02f, 0, 0), Color.Green);
-				vertices[i++] = new VertexPositionColor(point + new Vector3(0.02f,-0.02f,0), Color.Blue);
+				var point = points[ii];
+
+                vertices.Add(MapTexture(points[ii % points.Length], new Vector2(0,1)));
+                vertices.Add(MapTexture(points[(ii + 1) % points.Length], new Vector2(0,0)));
+                vertices.Add(MapTexture(points[(ii + phiParts) % points.Length], new Vector2(1,1)));
+
+                vertices.Add(MapTexture(points[(ii + 1) % points.Length], new Vector2(0,0)));
+                vertices.Add(MapTexture(points[(ii + 1 + phiParts) % points.Length], new Vector2(1,0)));
+                vertices.Add(MapTexture(points[(ii + phiParts) % points.Length], new Vector2(1,1)));
 
 			}
 
-			_vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), vertices.Length , BufferUsage.WriteOnly);
-			_vertexBuffer.SetData<VertexPositionColor>(vertices);
+            _vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), vertices.Count, BufferUsage.None);
+            _vertexBuffer.SetData<VertexPositionNormalTexture>(vertices.ToArray());
+			GraphicsDevice.SetVertexBuffer(_vertexBuffer);
 		}
 
-		protected override void UnloadContent()
+	    private VertexPositionNormalTexture MapTexture(VertexPositionNormalTexture p0, Vector2 p1)
+	    {
+			return new VertexPositionNormalTexture(p0.Position, p0.Normal, p1);
+	    }
+
+
+	    protected override void UnloadContent()
 		{
 		}
 
@@ -72,21 +91,21 @@ namespace Torus
 
 		protected override void Draw(GameTime gameTime)
 		{
-			GraphicsDevice.Clear(Color.CornflowerBlue);
-			var effect = new BasicEffect(GraphicsDevice);
-			//effect.EnableDefaultLighting();
-			effect.World = Matrix.CreateRotationX(_xRotation) * Matrix.CreateRotationY(_yRotation);
-			effect.Projection = _camera.Projection;
-			effect.View = _camera.View;
-			//effect.DiffuseColor = new Vector3(0.2f, 0.5f, 1f);
-			effect.VertexColorEnabled = true;
-
-			GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+			GraphicsDevice.Clear(Color.Black);
+			_effect.EnableDefaultLighting();
+		    _effect.World = Matrix.CreateRotationZ(_xRotation)*Matrix.CreateRotationX(_xRotation);// * Matrix.CreateRotationY(_yRotation);
+			_effect.Projection = _camera.Projection;
+			_effect.View = _camera.View;
+			//_effect.DiffuseColor = new Vector3(0.2f, 0.5f, 1f);
+			//_effect.VertexColorEnabled = true;
+		    _effect.PreferPerPixelLighting = true;
+		    _effect.TextureEnabled = true;
+		    _effect.Texture = _texture2;
 			
-			foreach (var pass in effect.CurrentTechnique.Passes)
+			foreach (var pass in _effect.CurrentTechnique.Passes)
 			{
 				pass.Apply();
-				GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _vertexBuffer.VertexCount / 3);
+			    GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _vertexBuffer.VertexCount / 3);
 			}
 
 			base.Draw(gameTime);
