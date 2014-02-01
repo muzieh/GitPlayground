@@ -21,7 +21,7 @@ namespace Torus
 		private float _xRotation;
 	    private BasicEffect _effect;
 	    private Texture2D _texture2;
-
+	    private Effect _effectCustom;
 	    public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
@@ -64,6 +64,8 @@ namespace Torus
             _vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), vertices.Count, BufferUsage.None);
             _vertexBuffer.SetData<VertexPositionNormalTexture>(vertices.ToArray());
 			GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+
+		    _effectCustom = Content.Load<Effect>("Effect1");
 		}
 
 	    private VertexPositionNormalTexture MapTexture(VertexPositionNormalTexture p0, Vector2 p1)
@@ -92,19 +94,26 @@ namespace Torus
 		protected override void Draw(GameTime gameTime)
 		{
 			GraphicsDevice.Clear(Color.Black);
-			_effect.EnableDefaultLighting();
+			//_effect.EnableDefaultLighting();
 		    _effect.World = Matrix.CreateRotationZ(_xRotation)*Matrix.CreateRotationX(_xRotation);// * Matrix.CreateRotationY(_yRotation);
 			_effect.Projection = _camera.Projection;
 			_effect.View = _camera.View;
 			//_effect.DiffuseColor = new Vector3(0.2f, 0.5f, 1f);
 			//_effect.VertexColorEnabled = true;
-		    _effect.PreferPerPixelLighting = true;
-		    _effect.TextureEnabled = true;
-		    _effect.Texture = _texture2;
+		    //_effect.PreferPerPixelLighting = true;
+		    //_effect.TextureEnabled = true;
+		    //_effect.Texture = _texture2;
 			
-			foreach (var pass in _effect.CurrentTechnique.Passes)
-			{
-				pass.Apply();
+			_effectCustom.Parameters["World"].SetValue(_effect.World);
+			_effectCustom.Parameters["Projection"].SetValue(_camera.Projection);
+			_effectCustom.Parameters["View"].SetValue(_camera.View);
+			_effectCustom.Parameters["xColoredTexture"].SetValue(_texture2);
+			_effectCustom.Parameters["LightDirection"].SetValue(new Vector3(-0.5f,0,-0.5f));
+			_effectCustom.Parameters["LightIntensity"].SetValue(1f);
+
+            foreach (var pass in _effectCustom.CurrentTechnique.Passes)
+            {
+                pass.Apply();
 			    GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _vertexBuffer.VertexCount / 3);
 			}
 
